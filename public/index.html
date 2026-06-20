@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Malvin C Leo — Connect Device</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800;900&family=Exo+2:wght@300;400;500;600&family=Share+Tech+Mono&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --g:#00FF8C;--c:#00E5FF;--p:#D400FF;--pk:#FF006E;
+  --void:#030507;--card:#080C10;--surf:#0D1117;--bord:#161D27;
+  --txt:#CDD6E8;--dim:#4A5568;
+  --mono:'Share Tech Mono',monospace;--orb:'Orbitron',sans-serif;--exo:'Exo 2',sans-serif;
+}
+html,body{min-height:100vh;background:var(--void);color:var(--txt);font-family:var(--exo);overflow-x:hidden}
+#cv{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.6}
+.pg{position:relative;z-index:2;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px 16px 44px}
+.hdr{text-align:center;margin-bottom:20px}
+.ht-badge{display:inline-flex;align-items:center;gap:7px;padding:5px 16px 5px 10px;border-radius:100px;border:1px solid rgba(0,229,255,.18);background:rgba(0,229,255,.04);font-family:var(--mono);font-size:10px;letter-spacing:.16em;color:var(--c);margin-bottom:10px}
+.ht-dot{width:6px;height:6px;border-radius:50%;background:var(--g);box-shadow:0 0 8px var(--g);animation:blink 1.8s ease-in-out infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
+.card{width:100%;max-width:400px;background:var(--card);border-radius:24px;border:1px solid var(--bord);overflow:hidden;position:relative;box-shadow:0 0 0 1px rgba(0,255,140,.05),0 40px 80px rgba(0,0,0,.75)}
+.card-line{height:2px;background:linear-gradient(90deg,var(--g),var(--c),var(--p),var(--pk),var(--g));background-size:400% 100%;animation:lscroll 4s linear infinite}
+@keyframes lscroll{0%{background-position:0% 0}100%{background-position:400% 0}}
+.hero{display:flex;flex-direction:column;align-items:center;padding:30px 24px 0;text-align:center}
+.orb-wrap{position:relative;width:90px;height:90px;margin-bottom:18px}
+.orb-svg{position:absolute;inset:-12px;width:calc(100% + 24px);height:calc(100% + 24px);animation:spin 5s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.orb-core{width:90px;height:90px;border-radius:50%;background:radial-gradient(circle at 38% 32%,#12301e,#060e0a);border:1.5px solid rgba(0,255,140,.2);display:flex;align-items:center;justify-content:center;box-shadow:0 0 28px rgba(0,255,140,.18),inset 0 0 16px rgba(0,255,140,.04);overflow:hidden;position:relative}
+.orb-core::after{content:'';position:absolute;inset:0;background:repeating-linear-gradient(to bottom,transparent 0,transparent 3px,rgba(0,255,140,.05) 3px,rgba(0,255,140,.05) 4px);pointer-events:none}
+.orb-scan{position:absolute;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,rgba(0,255,140,.9),transparent);box-shadow:0 0 10px rgba(0,255,140,.7);animation:oscan 2.8s ease-in-out infinite;z-index:3}
+@keyframes oscan{0%{top:6px;opacity:1}80%{top:80px;opacity:1}100%{top:80px;opacity:0}}
+.orb-live{position:absolute;bottom:3px;right:3px;width:18px;height:18px;background:var(--card);border-radius:50%;display:flex;align-items:center;justify-content:center;z-index:4}
+.orb-live::after{content:'';width:9px;height:9px;border-radius:50%;background:var(--g);box-shadow:0 0 6px var(--g),0 0 14px var(--g);animation:livep 1.5s ease-in-out infinite}
+@keyframes livep{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.7);opacity:.4}}
+.bot-name{font-family:var(--orb);font-size:clamp(26px,7vw,38px);font-weight:900;letter-spacing:.07em;background:linear-gradient(120deg,var(--g) 0%,var(--c) 45%,var(--p) 85%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;filter:drop-shadow(0 0 18px rgba(0,255,140,.3));animation:nglow 4s ease-in-out infinite alternate}
+@keyframes nglow{from{filter:drop-shadow(0 0 10px rgba(0,255,140,.25))}to{filter:drop-shadow(0 0 26px rgba(0,229,255,.45))}}
+.bot-sub{font-size:12px;color:var(--dim);letter-spacing:.1em;margin-top:4px;font-weight:300}
+.spill{display:inline-flex;align-items:center;gap:7px;margin:14px 0 26px;padding:6px 18px;border-radius:100px;border:1px solid rgba(0,255,140,.2);background:rgba(0,255,140,.04);font-family:var(--mono);font-size:11px;letter-spacing:.1em;color:var(--g);position:relative;overflow:hidden}
+.spill::before{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(0,255,140,.07),transparent);transform:translateX(-100%);animation:sweep 2.8s ease-in-out infinite}
+@keyframes sweep{0%{transform:translateX(-100%)}70%,100%{transform:translateX(120%)}}
+.spill-dot{width:7px;height:7px;border-radius:50%;background:var(--g);box-shadow:0 0 8px var(--g);animation:livep 1.5s infinite}
+.body{padding:0 22px 28px}
+.tabs{display:grid;grid-template-columns:1fr 1fr;background:var(--surf);border:1px solid var(--bord);border-radius:100px;padding:4px;gap:3px;margin-bottom:26px}
+.tb{display:flex;align-items:center;justify-content:center;gap:6px;padding:9px 0;border:none;border-radius:100px;background:transparent;font-family:var(--orb);font-size:11px;font-weight:600;letter-spacing:.07em;color:var(--dim);cursor:pointer;transition:all .25s}
+.tb:hover{color:var(--txt)}
+.tb.on-qr{background:rgba(0,229,255,.1);color:var(--c);box-shadow:0 0 0 1px rgba(0,229,255,.22)}
+.tb.on-pk{background:rgba(212,0,255,.1);color:var(--p);box-shadow:0 0 0 1px rgba(212,0,255,.28)}
+.pnl{display:none;animation:pnlin .3s ease}
+.pnl.on{display:block}
+@keyframes pnlin{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:none}}
+/* QR */
+.qr-area{width:186px;height:186px;margin:0 auto 16px;position:relative}
+.qr-glow{position:absolute;inset:-3px;border-radius:18px;background:linear-gradient(135deg,var(--c),var(--g),var(--p));padding:3px;animation:hrot 3s linear infinite}
+@keyframes hrot{0%{filter:hue-rotate(0deg)}100%{filter:hue-rotate(360deg)}}
+.qr-box{width:180px;height:180px;border-radius:14px;background:#fff;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;margin:0 auto}
+.qr-box img{width:168px;height:168px;display:block;border-radius:4px}
+.qr-idle{display:flex;flex-direction:column;align-items:center;gap:8px;color:#888;font-family:var(--mono);font-size:11px}
+.qr-idle-ico{font-size:44px;filter:grayscale(1)opacity(.3)}
+.qr-sl{position:absolute;left:0;right:0;height:3px;background:linear-gradient(90deg,transparent,rgba(0,229,255,.95),transparent);box-shadow:0 0 14px rgba(0,229,255,.8);animation:qline 2s ease-in-out infinite;display:none}
+@keyframes qline{0%{top:4px;opacity:1}80%{top:calc(100% - 4px);opacity:1}100%{top:calc(100% - 4px);opacity:0}}
+.qb-c{position:absolute;width:18px;height:18px;border-color:var(--c);border-style:solid}
+.qb-c.tl{top:5px;left:5px;border-width:2.5px 0 0 2.5px;border-radius:2px 0 0 0}
+.qb-c.tr{top:5px;right:5px;border-width:2.5px 2.5px 0 0;border-radius:0 2px 0 0}
+.qb-c.bl{bottom:5px;left:5px;border-width:0 0 2.5px 2.5px;border-radius:0 0 0 2px}
+.qb-c.br{bottom:5px;right:5px;border-width:0 2.5px 2.5px 0;border-radius:0 0 2px 0}
+.qr-cd{text-align:center;font-family:var(--mono);font-size:11px;color:var(--dim);margin-bottom:10px}
+.qr-cd span{color:var(--c)}
+.qr-hint{font-size:12px;color:var(--dim);text-align:center;line-height:1.7;margin-bottom:14px}
+.qr-hint strong{color:var(--c)}
+.btn-sec{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:11px;border-radius:11px;background:rgba(0,229,255,.06);border:1px solid rgba(0,229,255,.18);color:var(--c);font-family:var(--orb);font-size:11px;font-weight:600;letter-spacing:.08em;cursor:pointer;transition:all .2s}
+.btn-sec:hover{background:rgba(0,229,255,.12);box-shadow:0 0 18px rgba(0,229,255,.18)}
+.rspin{display:inline-block;transition:transform .5s}
+.btn-sec:hover .rspin{transform:rotate(180deg)}
+/* CODE PANEL */
+.ph-lbl{font-family:var(--mono);font-size:10px;color:var(--dim);letter-spacing:.15em;text-transform:uppercase;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.ph-dot{width:5px;height:5px;border-radius:50%;background:var(--p);box-shadow:0 0 7px var(--p)}
+.ph-row{display:flex;align-items:center;background:var(--surf);border:1.5px solid rgba(212,0,255,.22);border-radius:12px;overflow:hidden;margin-bottom:6px;transition:border-color .2s,box-shadow .2s}
+.ph-row:focus-within{border-color:rgba(212,0,255,.55);box-shadow:0 0 0 3px rgba(212,0,255,.09)}
+.ph-pre{padding:0 14px;height:50px;display:flex;align-items:center;border-right:1px solid var(--bord);color:var(--p);font-size:18px;flex-shrink:0}
+.ph-in{flex:1;padding:13px 15px;background:transparent;border:none;outline:none;color:var(--txt);font-family:var(--mono);font-size:14px;letter-spacing:.05em}
+.ph-in::placeholder{color:#1f2a1f}
+.ph-hint{font-size:11px;color:var(--dim);margin-bottom:18px;padding-left:2px}
+.cd-box{border:1px solid rgba(212,0,255,.16);border-radius:14px;background:var(--surf);padding:18px;text-align:center;margin-bottom:18px;position:relative;overflow:hidden}
+.cd-box::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at center,rgba(212,0,255,.05),transparent 65%)}
+.cd-label{font-family:var(--mono);font-size:9px;letter-spacing:.18em;color:var(--dim);text-transform:uppercase;margin-bottom:12px}
+.cd-val{font-family:var(--orb);font-size:clamp(22px,6vw,30px);font-weight:800;letter-spacing:.22em;color:var(--p);text-shadow:0 0 18px rgba(212,0,255,.55),0 0 36px rgba(212,0,255,.25);animation:flicker 6s ease-in-out infinite}
+@keyframes flicker{0%,90%,100%{opacity:1}91%{opacity:.6}93%{opacity:1}95%{opacity:.7}}
+.cd-empty{font-family:var(--orb);font-size:28px;letter-spacing:.22em;color:var(--bord)}
+.cd-exp{font-family:var(--mono);font-size:11px;color:var(--dim);margin-top:10px}
+.cd-exp span{color:var(--pk)}
+.btn-cta{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;padding:14px;border-radius:13px;border:none;background:linear-gradient(135deg,var(--p),var(--pk));color:#fff;font-family:var(--orb);font-size:13px;font-weight:800;letter-spacing:.1em;cursor:pointer;position:relative;overflow:hidden;box-shadow:0 6px 22px rgba(212,0,255,.38);transition:transform .15s,box-shadow .2s}
+.btn-cta::after{content:'';position:absolute;top:-50%;left:-60%;width:40%;height:200%;background:rgba(255,255,255,.14);transform:skewX(-18deg);transition:left .5s ease}
+.btn-cta:hover::after{left:170%}
+.btn-cta:hover{transform:translateY(-2px);box-shadow:0 10px 30px rgba(212,0,255,.52)}
+.btn-cta:active{transform:translateY(0)}
+.btn-cta.ok{background:linear-gradient(135deg,#00C47A,#00875A);box-shadow:0 6px 22px rgba(0,196,122,.38)}
+.btn-cta.busy{opacity:.75;pointer-events:none}
+.div{height:1px;margin:22px 0;background:linear-gradient(90deg,transparent,var(--bord),transparent)}
+.steps{display:flex;align-items:flex-start;gap:0}
+.st{flex:1;display:flex;flex-direction:column;align-items:center;gap:7px;text-align:center}
+.st-ico{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px}
+.st-ico.gc{background:rgba(0,255,140,.1);border:1.5px solid rgba(0,255,140,.22);box-shadow:0 0 14px rgba(0,255,140,.09)}
+.st-ico.pc{background:rgba(212,0,255,.1);border:1.5px solid rgba(212,0,255,.22);box-shadow:0 0 14px rgba(212,0,255,.09)}
+.st-ico.cc{background:rgba(0,229,255,.1);border:1.5px solid rgba(0,229,255,.22);box-shadow:0 0 14px rgba(0,229,255,.09)}
+.st-txt{font-size:10px;color:var(--dim);line-height:1.4;max-width:62px}
+.st-line{flex:0 0 16px;display:flex;align-items:flex-start;padding-top:20px}
+.st-line div{width:100%;height:1px;background:linear-gradient(90deg,rgba(0,255,140,.15),rgba(212,0,255,.15))}
+.ticker{display:flex;align-items:center;gap:9px;padding:8px 13px;background:var(--surf);border:1px solid var(--bord);border-radius:8px;margin-top:18px;overflow:hidden}
+.tick-d{width:7px;height:7px;border-radius:50%;flex-shrink:0;background:var(--g);box-shadow:0 0 8px var(--g);animation:livep 1.5s infinite}
+.tick-t{font-family:var(--mono);font-size:10px;color:var(--dim);white-space:nowrap;animation:tscroll 18s linear infinite}
+@keyframes tscroll{0%{transform:translateX(0)}100%{transform:translateX(-55%)}}
+.foot{padding:0 22px 24px;text-align:center}
+.foot-txt{font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--dim)}
+.foot-txt span{background:linear-gradient(90deg,var(--g),var(--c));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-weight:700}
+.toast{position:fixed;bottom:26px;left:50%;transform:translateX(-50%) translateY(70px);background:var(--card);border:1px solid rgba(0,229,255,.28);border-radius:100px;padding:9px 22px;font-family:var(--mono);font-size:11px;color:var(--c);letter-spacing:.08em;box-shadow:0 8px 28px rgba(0,0,0,.5);transition:transform .35s cubic-bezier(.34,1.56,.64,1);z-index:99;white-space:nowrap}
+.toast.on{transform:translateX(-50%) translateY(0)}
+@media(max-width:430px){.body,.foot{padding-left:16px;padding-right:16px}.hero{padding-left:16px;padding-right:16px}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+</style>
+</head>
+<body>
+<canvas id="cv"></canvas>
+<main class="pg">
+  <header class="hdr">
+    
+  </header>
+  <div class="card">
+    <div class="card-line"></div>
+    <div class="hero">
+      <div class="orb-wrap">
+        <svg class="orb-svg" viewBox="0 0 114 114" fill="none">
+          <circle cx="57" cy="57" r="52" stroke="url(#og)" stroke-width="1.5" stroke-dasharray="7 4.5" stroke-linecap="round"/>
+          <defs><linearGradient id="og" x1="0" y1="0" x2="114" y2="114" gradientUnits="userSpaceOnUse"><stop stop-color="#00FF8C"/><stop offset=".33" stop-color="#00E5FF"/><stop offset=".66" stop-color="#D400FF"/><stop offset="1" stop-color="#00FF8C"/></linearGradient></defs>
+        </svg>
+        <div class="orb-core">
+          <svg width="46" height="46" viewBox="0 0 48 48" fill="none">
+            <circle cx="24" cy="24" r="20" fill="rgba(0,255,140,.12)"/>
+            <path fill="#00FF8C" d="M24 7C14.6 7 7 14.6 7 24c0 2.96.77 5.74 2.12 8.16L7 41l9.05-2.08A16.9 16.9 0 0024 41c9.4 0 17-7.6 17-17S33.4 7 24 7zm8.6 23.7c-.36 1-2.1 1.9-2.9 2.02-.74.11-1.66.16-2.68-.17a24.7 24.7 0 01-2.42-.89c-4.27-1.84-7.06-6.14-7.27-6.43-.21-.29-1.7-2.25-1.7-4.29s1.07-3.04 1.45-3.46c.38-.41.83-.52 1.11-.52.27 0 .55.003.8.015.25.012.6-.097.94.71.35.86 1.21 2.97 1.32 3.19.1.21.17.46.035.75-.14.28-.21.46-.41.71-.21.25-.44.56-.62.75-.21.2-.42.44-.18.86.24.42 1.07 1.77 2.3 2.86 1.58 1.41 2.91 1.84 3.33 2.05.42.21.67.17.91-.1.25-.28 1.05-1.23 1.33-1.65.28-.42.56-.35.94-.21.38.14 2.45 1.16 2.87 1.37.42.21.7.31.8.49.1.18.1 1.02-.25 2.01z"/>
+          </svg>
+          <div class="orb-scan"></div>
+          <div class="orb-live"></div>
+        </div>
+      </div>
+      <h1 class="bot-name">MALVIN C LEO 
+      MD</h1>
+      <p class="bot-sub">Whatsapp Multi Device Bot</p>
+      
+    <div class="spill" id="spill">
+        <span class="spill-dot"></span>
+        <span id="spill-txt">CHECKING STATUS...</span>
+      </div>
+    </div>
+      
+        
+      
+    <div class="body">
+      <div class="tabs" role="tablist">
+        <button class="tb" id="tb-qr" onclick="sw('qr',this)">📷 &nbsp;QR CODE</button>
+        <button class="tb on-pk" id="tb-pk" onclick="sw('pk',this)">🔑 &nbsp;PAIR CODE</button>
+      </div>
+
+      <!-- QR -->
+      <div class="pnl" id="pnl-qr">
+        <div class="qr-area">
+          <div class"">
+            <div class="qr-box" id="qr-box">
+              <div class="qr-idle" id="qr-idle"><span class="qr-idle-ico">🟥</span><span>GENERATING…</span></div>
+              <div class="qr-sl" id="qr-sl"></div>
+              <div class="qb-c tl"></div><div class="qb-c tr"></div><div class="qb-c bl"></div><div class="qb-c br"></div>
+            </div>
+          </div>
+        </div>
+        <p class="qr-cd" id="qr-cd" style="display:none">Expires in <span id="qr-s">60</span>s</p>
+        <p class="qr-hint">Open WhatsApp → <strong>Linked Devices</strong> → <strong>Link a Device</strong> → scan this code.</p>
+        <button class="btn-sec" onclick="loadQR()"><span class="rspin">↺</span>&nbsp; REFRESH QR</button>
+        <div class="div"></div>
+        <div class="steps">
+          <div class="st"><div class="st-ico gc">📱</div><div class="st-txt">Open WhatsApp</div></div>
+          <div class="st-line"><div></div></div>
+          <div class="st"><div class="st-ico pc">📷</div><div class="st-txt">Scan Code</div></div>
+          <div class="st-line"><div></div></div>
+          <div class="st"><div class="st-ico cc">✅</div><div class="st-txt">Connected!</div></div>
+        </div>
+      </div>
+
+      <!-- PAIR CODE -->
+      <div class="pnl on" id="pnl-pk">
+        <div class="ph-lbl"><span class="ph-dot"></span> WHATSAPP PHONE NUMBER</div>
+        <div class="ph-row">
+          <div class="ph-pre">📞</div>
+          <input class="ph-in" id="ph-in" type="tel" placeholder="263xxxxxxxxxx" maxlength="18" oninput="this.value=this.value.replace(/[^\d+]/g,'')"/>
+        </div>
+        <p class="ph-hint">Country code first, no spaces — e.g. 263xxxxxxxxxx</p>
+          <div class="ht-badge"><span class="ht-dot"></span>HANDSOME TECH 🇿🇼</div>
+        <div class="cd-box">
+          <div class="cd-label">
+          ⬡ PAIRING CODE</div>
+          <div class="cd-empty" id="cd-val">- - - - - - - -</div>
+          <div class="cd-exp" id="cd-exp" style="display:none">Expires in <span id="cd-s">120</span>s</div>
+        </div>
+        <button class="btn-cta" id="cta" onclick="getCode()">
+          <span>⚡</span><span id="cta-lbl">GET PAIRING CODE</span>
+        </button>
+        <div class="div"></div>
+        
+        <div class="div"></div>
+        <div class="steps">
+          <div class="st"><div class="st-ico gc">📱</div><div class="st-txt">Open WhatsApp</div></div>
+          <div class="st-line"><div></div></div>
+          <div class="st"><div class="st-ico pc">⌨️</div><div class="st-txt">Enter Code</div></div>
+          <div class="st-line"><div></div></div>
+          <div class="st"><div class="st-ico cc">✅</div><div class="st-txt">Connected!</div></div>
+        </div>
+      </div>
+        
+
+      <div class="foot"><div class="foot-txt">Malvin C is Best
+      
+</div>
+    </div>
+    
+              
+</main>
+<div class="toast" id="toast"></div>
+
+    
+         
+<script>
+/* CANVAS */
+(function(){
+  const cv=document.getElementById('cv'),ctx=cv.getContext('2d');
+  const C=['#00FF8C','#00E5FF','#D400FF','#FF006E'];
+  let W,H,pts=[];
+  function resize(){W=cv.width=innerWidth;H=cv.height=innerHeight;pts=[];const gx=Math.ceil(W/95)+1,gy=Math.ceil(H/95)+1;for(let y=0;y<=gy;y++)for(let x=0;x<=gx;x++){const bx=x*95+(Math.random()-.5)*36,by=y*95+(Math.random()-.5)*36;pts.push({bx,by,x:bx,y:by,vx:(Math.random()-.5)*.28,vy:(Math.random()-.5)*.28,col:C[Math.floor(Math.random()*C.length)],r:Math.random()*1.1+.35,a:Math.random()*.14+.03})}}
+  function draw(){ctx.clearRect(0,0,W,H);pts.forEach(p=>{p.x+=p.vx;p.y+=p.vy;if(Math.abs(p.x-p.bx)>22)p.vx*=-1;if(Math.abs(p.y-p.by)>22)p.vy*=-1});for(let i=0;i<pts.length;i++){for(let j=i+1;j<pts.length;j++){const dx=pts[i].x-pts[j].x,dy=pts[i].y-pts[j].y,d=Math.sqrt(dx*dx+dy*dy);if(d<105){ctx.globalAlpha=(1-d/105)*.055;ctx.strokeStyle=pts[i].col;ctx.lineWidth=.4;ctx.beginPath();ctx.moveTo(pts[i].x,pts[i].y);ctx.lineTo(pts[j].x,pts[j].y);ctx.stroke()}}ctx.globalAlpha=pts[i].a;ctx.fillStyle=pts[i].col;ctx.beginPath();ctx.arc(pts[i].x,pts[i].y,pts[i].r,0,Math.PI*2);ctx.fill()}ctx.globalAlpha=1;requestAnimationFrame(draw)}
+  window.addEventListener('resize',resize);resize();draw();
+})();
+
+/* STATUS POLL */
+async function pollStatus(){
+  try{const r=await fetch('/status');const d=await r.json();const el=document.getElementById('spill-txt');if(d.paired){el.textContent='● BOT CONNECTED'}else{el.textContent='○ WAITING FOR PAIR'}}catch{}
+  setTimeout(pollStatus,5000);
+}
+pollStatus();
+
+/* TABS */
+function sw(id,btn){document.querySelectorAll('.tb').forEach(b=>b.className='tb');document.querySelectorAll('.pnl').forEach(p=>p.classList.remove('on'));btn.classList.add(id==='qr'?'on-qr':'on-pk');document.getElementById('pnl-'+id).classList.add('on');if(id==='qr'&&!document.getElementById('qr-box').querySelector('img'))loadQR()}
+
+/* QR */
+let qrT=null;
+async function loadQR(){
+  const box=document.getElementById('qr-box'),idle=document.getElementById('qr-idle'),sl=document.getElementById('qr-sl'),cd=document.getElementById('qr-cd');
+  const old=box.querySelector('img');if(old)old.remove();
+  idle.style.display='flex';sl.style.display='none';cd.style.display='none';
+  clearInterval(qrT);toast('Fetching QR code…');
+  try{
+    const r=await fetch('/qr');const d=await r.json();
+    if(d.qr){
+      const img=new Image();img.style.cssText='width:168px;height:168px;display:block;border-radius:4px';
+      img.onload=()=>{idle.style.display='none';box.insertBefore(img,sl);sl.style.display='block';cd.style.display='block';let t=60;document.getElementById('qr-s').textContent=t;toast('QR ready — scan within 60s');qrT=setInterval(()=>{t--;document.getElementById('qr-s').textContent=t;if(t<=0){clearInterval(qrT);img.remove();sl.style.display='none';idle.innerHTML='<span style="font-size:11px;color:#666;text-align:center;padding:0 12px;line-height:1.6">QR expired.<br>Tap Refresh.</span>';idle.style.display='flex';cd.style.display='none';toast('QR expired — tap Refresh')}},1000)};
+      img.src=d.qr;
+    }else{idle.innerHTML='<span style="font-size:11px;color:#666;text-align:center;padding:0 12px;line-height:1.6">Bot not ready.<br>Try again shortly.</span>';toast('Bot not ready yet')}
+  }catch{idle.innerHTML='<span style="font-size:11px;color:#666;text-align:center;padding:0 12px;line-height:1.6">Connection error.<br>Refresh the page.</span>';toast('Connection error')}
+}
+
+/* PAIR CODE */
+let cdT=null;
+async function getCode(){
+  const num=document.getElementById('ph-in').value.trim().replace(/\D/g,'');
+  if(num.length<7){shake();toast('⚠ Malvin C :Enter a valid phone number ');return}
+  const btn=document.getElementById('cta'),lbl=document.getElementById('cta-lbl');
+  btn.classList.add('busy');lbl.textContent='REQUESTING…';toast('Sending request…');
+  try{
+    const r=await fetch('/pair',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({phone:num})});
+    const d=await r.json();
+    if(d.success){
+      const cv=document.getElementById('cd-val');cv.className='cd-val';cv.textContent=d.code;
+      document.getElementById('cd-exp').style.display='block';let t=120;document.getElementById('cd-s').textContent=t;
+      clearInterval(cdT);cdT=setInterval(()=>{t--;document.getElementById('cd-s').textContent=t;if(t<=0){clearInterval(cdT);cv.className='cd-empty';cv.textContent='- - - - - - - -';document.getElementById('cd-exp').style.display='none';toast('Code expired — request new one')}},1000);
+      btn.classList.remove('busy');btn.classList.add('ok');lbl.textContent='✓ CODE SENT';
+      toast('Code ready! Enter it in WhatsApp → Linked Devices');
+      setTimeout(()=>{btn.classList.remove('ok');lbl.textContent='GET NEW CODE'},6000);
+    }else{btn.classList.remove('busy');lbl.textContent='GET PAIRING CODE';toast('❌ '+d.message)}
+  }catch{btn.classList.remove('busy');lbl.textContent='GET PAIRING CODE';toast('❌ Request failed')}
+}
+
+function shake(){const w=document.querySelector('.ph-row');let i=0,d=[8,-8,7,-6,5,-4,0];const t=setInterval(()=>{w.style.transform='translateX('+d[i++]+'px)';if(i>=d.length){clearInterval(t);w.style.transform='';w.style.borderColor='';w.style.boxShadow=''}},55);w.style.borderColor='rgba(255,0,110,.6)';w.style.boxShadow='0 0 0 3px rgba(255,0,110,.14)'}
+
+let tT=null;
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('on');clearTimeout(tT);tT=setTimeout(()=>t.classList.remove('on'),3200)}
+</script>
+</body>
+</html>
